@@ -45,9 +45,9 @@ function App() {
         <h2>NASA IMAGES</h2>
       </header>
       <Container>
-        <Form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
+        <Form onSubmit={handleSubmit} style={{ margin: "1rem" }}>
           <Row>
-            <Col xs={10}>
+            <Col md={11} xs={10}>
               <Form.Group className="mb-3">
                 <Form.Control
                   type="text"
@@ -57,34 +57,46 @@ function App() {
                 />
               </Form.Group>
             </Col>
-            <Col xs={1}>
+            <Col md={1} xs={2}>
               <Button type="submit" variant="info" size="md">
                 <b>Search</b>
               </Button>
             </Col>
           </Row>
         </Form>
-        {images &&
-          images.map((img) => {
-            return (
-              <Row>
-                <Card style={{ width: "18rem", margin: "auto" }}>
-                  <Card.Img variant="top" src={img.links[0].href} />
-                  <Card.Body>
-                    <Card.Title>{img.data[0].title}</Card.Title>
-                    <Button
-                      variant="primary"
-                      onClick={() =>
-                        downloadImage(img.links[0].href, img.data[0].title)
-                      }
-                    >
-                      Download Image
-                    </Button>
-                  </Card.Body>
-                </Card>
-              </Row>
-            );
-          })}
+        <Row>
+          {images &&
+            images.map((img) => {
+              return (
+                <Col md={6}>
+                  <Card
+                    style={{
+                      width: "600px",
+                      margin: "auto",
+                      marginBottom: "1rem"
+                    }}
+                  >
+                    <Card.Img
+                      className="image-card"
+                      variant="top"
+                      src={img.links[0].href}
+                    />
+                    <Card.Body>
+                      <Card.Title>{img.data[0].title}</Card.Title>
+                      <Button
+                        variant="primary"
+                        onClick={() =>
+                          downloadImage(img.links[0].href, img.data[0].title)
+                        }
+                      >
+                        Download Image
+                      </Button>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })}
+        </Row>
       </Container>
     </div>
   );
