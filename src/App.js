@@ -1,23 +1,91 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Button, Container, Row, Form, Card, Col } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { useState } from "react";
+import axios from "axios";
+// import ImageDownloadLink from "./ImageDownloadLink";
 
 function App() {
+  const [search, setSearch] = useState("");
+  const [images, setImages] = useState(null);
+  const handleChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { data } = await axios.get(
+      `https://images-api.nasa.gov/search?q=${search}&media_type=image`
+    );
+    console.log(data.collection.items);
+    const imgData = data.collection.items.slice(0, 10);
+    setImages(imgData);
+  };
+
+  const downloadImage = async (src, name) => {
+    const response = await axios.get(src, {
+      responseType: "blob",
+      headers: {
+        "Content-Type": "image/jpeg"
+      }
+    });
+    const fileName = name + ".jpg";
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <header style={{ marginTop: "1rem" }}>
+        <h2>NASA IMAGES</h2>
       </header>
+      <Container>
+        <Form onSubmit={handleSubmit} style={{ marginTop: "1rem" }}>
+          <Row>
+            <Col xs={10}>
+              <Form.Group className="mb-3">
+                <Form.Control
+                  type="text"
+                  placeholder="Search for a NASA image you want to download"
+                  value={search}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            </Col>
+            <Col xs={1}>
+              <Button type="submit" variant="info" size="md">
+                <b>Search</b>
+              </Button>
+            </Col>
+          </Row>
+        </Form>
+        {images &&
+          images.map((img) => {
+            return (
+              <Row>
+                <Card style={{ width: "18rem", margin: "auto" }}>
+                  <Card.Img variant="top" src={img.links[0].href} />
+                  <Card.Body>
+                    <Card.Title>{img.data[0].title}</Card.Title>
+                    <Button
+                      variant="primary"
+                      onClick={() =>
+                        downloadImage(img.links[0].href, img.data[0].title)
+                      }
+                    >
+                      Download Image
+                    </Button>
+                  </Card.Body>
+                </Card>
+              </Row>
+            );
+          })}
+      </Container>
     </div>
   );
 }
