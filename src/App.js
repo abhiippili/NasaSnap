@@ -3,7 +3,6 @@ import { Button, Container, Row, Form, Card, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useState } from "react";
 import axios from "axios";
-// import ImageDownloadLink from "./ImageDownloadLink";
 
 function App() {
   const [search, setSearch] = useState("");
@@ -42,7 +41,7 @@ function App() {
   return (
     <div className="App">
       <header style={{ marginTop: "1rem" }}>
-        <h2>NASA IMAGES</h2>
+        <h2>NASA SNAP</h2>
       </header>
       <Container>
         <Form onSubmit={handleSubmit} style={{ margin: "1rem" }}>
